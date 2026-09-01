@@ -53,4 +53,27 @@ describe("NexDesk dashboard", () => {
     expect(within(drawer).getByText("Status changed to In Progress")).toBeInTheDocument();
     expect(JSON.parse(localStorage.getItem("nexdesk-tickets") || "[]")).toEqual(expect.arrayContaining([expect.objectContaining({ id: "NX-1042", status: "In Progress", activity: expect.arrayContaining([expect.objectContaining({ text: "Status changed to In Progress" })]) })]));
   });
+
+  it("opens the team workspace and exposes capacity details", () => {
+    render(<Home />);
+    fireEvent.click(screen.getByRole("button", { name: "Team" }));
+
+    expect(screen.getByRole("heading", { name: "Your service team" })).toBeInTheDocument();
+    expect(screen.getByText("Agents on duty")).toBeInTheDocument();
+    expect(screen.getAllByText((_content, element) => element?.textContent?.includes("Rebalance") ?? false).length).toBeGreaterThan(0);
+  });
+
+  it("opens knowledge base and settings panels", () => {
+    render(<Home />);
+    fireEvent.click(screen.getByRole("button", { name: "Knowledge base" }));
+    expect(screen.getByRole("heading", { name: "Knowledge base" })).toBeInTheDocument();
+    expect(screen.getByText("VPN access for new hires")).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Settings" }));
+    expect(screen.getByRole("heading", { name: "Workspace settings" })).toBeInTheDocument();
+    const toggle = screen.getByRole("button", { name: "Toggle ticket updates" });
+    expect(toggle).toHaveClass("on");
+    fireEvent.click(toggle);
+    expect(toggle).not.toHaveClass("on");
+  });
 });
