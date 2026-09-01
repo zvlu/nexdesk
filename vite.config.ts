@@ -224,6 +224,10 @@ export default defineConfig({
     port: 3000,
     strictPort: false, // Will find next available port if 3000 is busy
     host: true,
+    // The hosted WebDev preview does not reliably forward websocket upgrades.
+    // Disable the optional HMR client so the browser does not report a failed
+    // websocket connection; full-page refreshes still pick up changes.
+    hmr: false,
     allowedHosts: [
       ".manuspre.computer",
       ".manus.computer",
